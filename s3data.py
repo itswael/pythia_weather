@@ -18,7 +18,7 @@ import pandas as pd
 LATITUDE = 42.0
 LONGITUDE = -93.5
 ELEVATION = 40  # meters above sea level
-STATION_NAME = "GVFL"  # 4-character station code
+STATION_NAME = "NASA"  # 4-character station code
 
 # Time period for comparison
 START_DATE = date(2020, 1, 1)
@@ -46,12 +46,13 @@ MERRA2DAILY_ZARR_HINT = (
 
 # Default variable sets
 SOLAR_VARS = ["ALLSKY_SFC_SW_DWN"]  # SRAD source (W m^-2) -> convert to MJ m^-2 d^-1
-MET_VARS = ["T2M_MAX", "T2M_MIN", "PRECTOTCORR", "T2MDEW", "WS2M", "RH2M"]
+MET_VARS = ["T2M", "T2M_MAX", "T2M_MIN", "PRECTOTCORR", "T2MDEW", "WS2M", "RH2M"]
 
 # ---------------------------------------------------------------------
 # Helpers: POWER S3/Zarr (ARD)
 # ---------------------------------------------------------------------
 
+#find the daily LST zarr under a given prefix
 def _discover_daily_zarr(prefix: str) -> str:
     """Discover a DAILY temporal LST Zarr under a given POWER product prefix.
     prefix examples: "nasa-power/syn1deg/temporal/" or "nasa-power/merra2/temporal/"
@@ -277,12 +278,11 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
         # Calculate day of year
         date_obj = datetime(year, month, day)
         day_of_year = date_obj.timetuple().tm_yday
-        year_2digit = year % 100
         
-        formatted_date = f"{year_2digit:02d}{day_of_year:03d}"
+        formatted_date = f"{year}{day_of_year:03d}"
         
         # Build data line
-        data_line = f"{formatted_date:>5}"
+        data_line = f"{formatted_date:>7}"
         for nasa_var, icasa_var in available_vars:
             value = record.get(nasa_var, -99.0)
             if value is None or pd.isna(value):
