@@ -247,13 +247,14 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
     # Determine available variables and create header
     sample_record = records[0]
     variable_map = {
+        'T2M': 'T2M',    # Average temperature (°C)
         'TMAX': 'TMAX',  # Maximum temperature (°C)
         'TMIN': 'TMIN',  # Minimum temperature (°C)
         'RAIN': 'RAIN',  # Precipitation (mm)
         'SRAD': 'SRAD',  # Solar radiation (MJ/m²/day)
         'T2MDEW': 'TDEW', # Dew point temperature (°C)
         'WS2M': 'WIND',   # Wind speed (m/s)
-        'RH2M': 'RHUM'    # Relative humidity (%)
+        'RH2M': 'RH2M'    # Relative humidity (%)
     }
     
     # Find which variables are available
@@ -265,7 +266,7 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
             header_vars.append(icasa_var)
     
     # Add data header
-    wth_lines.append("@DATE  " + "".join(f"{var:>6}" for var in header_vars[1:]))
+    wth_lines.append("@  DATE" + "".join(f"{var:>8}" for var in header_vars[1:]))
     
     # Add data records
     for record in records:
@@ -287,7 +288,7 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
             value = record.get(nasa_var, -99.0)
             if value is None or pd.isna(value):
                 value = -99.0
-            data_line += f"{value:6.1f}"
+            data_line += f"{value:7.1f}"
         
         wth_lines.append(data_line)
     
@@ -317,7 +318,7 @@ def save_wth_data(wth_content: str,
     Path(data_dir).mkdir(exist_ok=True)
     
     # Generate filename with s3** prefix
-    filename = f"s3power_{latitude}_{longitude}_{start_date.strftime('%Y%m%d')}_{end_date.strftime('%Y%m%d')}.wth"
+    filename = f"NP{latitude}_{longitude}_{start_date.strftime('%Y%m%d')}_{end_date.strftime('%Y%m%d')}.wth"
     filepath = Path(data_dir) / filename
     
     # Save data
