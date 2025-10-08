@@ -5,6 +5,7 @@ import fsspec
 import s3fs
 from datetime import date, datetime
 from typing import Any, Dict, Iterable
+from config import NASA_POWER_S3_BASE
 
 #find the daily LST zarr under a given prefix
 def _discover_daily_zarr(prefix: str) -> str:
