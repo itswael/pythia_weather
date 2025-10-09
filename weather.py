@@ -1,3 +1,9 @@
+from datetime import date
+from pathlib import Path
+from weather_util import _transform_values, convert_to_wth_format, save_wth_data
+from weather_via_S3 import get_power_s3_daily
+from config import DATA_DIR
+import pandas as pd
 
 def download_weather_data(lat, lon, start_date, end_date, parameters):
     # check if the data file already exists
@@ -17,7 +23,7 @@ async def get_Daily_S3_WTH(
         end_date=date(2020, 3, 31)):
 
     # Fetch data from NASA POWER S3/Zarr
-    df, ds_met, out = await get_power_s3_daily(
+    df, out = await get_power_s3_daily(
             latitude=42.0,
             longitude=-93.5,
             start_date=date(2020, 1, 1),
