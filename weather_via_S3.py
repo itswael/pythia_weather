@@ -13,7 +13,7 @@ async def get_power_s3_daily(latitude: float,
                              include_srad: bool = True,
                              include_met: bool = True,
                              syn1_url: Optional[str] = None,
-                             merra2_url: Optional[str] = None):
+                             merra2_url: Optional[str] = None) -> tuple[pd.DataFrame, Dict[str, Any]]:
     """Fetch daily data directly from POWER S3/Zarr (ARD), merging solar + meteorology.
 
     - Solar SRAD comes from SYN1deg: ALLSKY_SFC_SW_DWN (W m^-2) -> SRAD = *0.0864 (MJ m^-2 d^-1)
@@ -86,8 +86,11 @@ async def get_power_s3_daily(latitude: float,
                 df = pd.merge(df, df_sol, on="time", how="inner")
 
         if df is None:
-            return {**out, "error": "No data sources selected: set include_srad and/or include_met."}
+            df = pd.DataFrame()
+            out["error"] = "No data sources selected: set include_srad and/or include_met."
         
     except Exception as e:
-        print(e)
-    return df, ds_met, out
+        if df is None:
+            df = pd.DataFrame()
+            out["error"] = str(e)
+    return (df, out)
