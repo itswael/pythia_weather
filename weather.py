@@ -1,3 +1,4 @@
+import asyncio
 from datetime import date
 from pathlib import Path
 from weather_util import _transform_values, convert_to_wth_format, save_wth_data
@@ -5,7 +6,7 @@ from weather_via_S3 import get_power_s3_daily
 from config import DATA_DIR
 import pandas as pd
 
-def download_weather_data(lat, lon, start_date, end_date, parameters):
+async def download_weather_data(lat, lon, start_date, end_date, parameters):
     # check if the data file already exists
     ## get the file name from the directory
     ## get the lat, lon, start_date, end_date from the file name
@@ -13,8 +14,8 @@ def download_weather_data(lat, lon, start_date, end_date, parameters):
     # if exists, return true
     #else execute the code to download the data
     ## if the date is older than 7 days, use the historical s3 bucket
-    ## else use the api to get the data
-    pass
+    ## else if the date is within 7 days or failed to get from s3,use the api to get the data
+    await get_Daily_S3_WTH()
 
 async def get_Daily_S3_WTH(
         latitude=42.0,
@@ -47,3 +48,6 @@ async def get_Daily_S3_WTH(
 
     # Save data
     save_wth_data(icasa_format_data, filepath)
+
+if __name__ == "__main__":
+    asyncio.run(download_weather_data(42.0, -93.5, date(2020, 1, 1), date(2020, 3, 31), parameters=None))
