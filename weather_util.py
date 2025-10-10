@@ -89,7 +89,7 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
     wth_lines = []
     wth_lines.append("*WEATHER DATA : NASA POWER via S3/Zarr")
     wth_lines.append("")
-    wth_lines.append("* INSI      LAT     LONG  ELEV   TAV   AMP REFHT WNDHT")
+    wth_lines.append("@ INSI      LAT     LONG  ELEV   TAV   AMP REFHT WNDHT")
     wth_lines.append(f"  {station_name:>4} {latitude:8.3f} {longitude:8.3f} {elevation:5.0f}  -99.0  -99.0  -99.0  -99.0")
     wth_lines.append("")
     
@@ -105,7 +105,7 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
             header_vars.append(icasa_var)
     
     # Add data header
-    wth_lines.append("*  DATE" + "".join(f"{var:>8}" for var in header_vars[1:]))
+    wth_lines.append("@  DATE" + "".join(f"{var:>8}" for var in header_vars[1:]))
     
     # Add data records
     for record in records:
