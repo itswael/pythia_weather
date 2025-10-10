@@ -3,9 +3,8 @@ from typing import Any, Dict, Optional
 import asyncio
 import pandas as pd
 import xarray as xr
-from config import MERRA2DAILY_ZARR_HINT, SYN1DAILY_ZARR_HINT, MET_VARS, SOLAR_VARS, RenameMetVars, RenameSolarVars
+from config import MERRA2DAILY_ZARR_HINT, SYN1DAILY_ZARR_HINT, MET_VARS, SOLAR_VARS, RenameMetVars, RenameSolarVars, ELEVATION_FILE
 from weather_util import _discover_daily_zarr, _open_power_zarr, _slice_point, _transform_values, convert_to_wth_format
-
 
 async def get_power_s3_daily(latitude: float,
                              longitude: float,
@@ -135,7 +134,7 @@ def get_elevation(lat: float, lon: float) -> float:
         float: Elevation in meters.
     """
 
-    welev_file='welev_merra2_grid.nc'
+    welev_file=ELEVATION_FILE
 
     # Load the WELEV data
     ds = xr.open_dataset(welev_file)
