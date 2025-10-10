@@ -141,7 +141,8 @@ def get_elevation(lat: float, lon: float) -> float:
     ds = xr.open_dataset(welev_file)
     welev_data = ds['WELEV']
 
-    #elevation = welev_data.sel(y=lat, x=lon, method="nearest").values.item()
+    # if direct data is to be used
+    # elevation = welev_data.sel(y=lat, x=lon, method="nearest").values.item()
     
     # Interpolate to exact coordinates
     elevation = welev_data.interp(y=lat, x=lon, method='linear')
