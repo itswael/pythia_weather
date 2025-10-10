@@ -6,7 +6,7 @@ import s3fs
 from pathlib import Path
 from datetime import date, datetime
 from typing import Any, Dict, Iterable
-from config import NASA_POWER_S3_BASE, variable_map
+from config import ELEVATION_FILE, NASA_POWER_S3_BASE, variable_map
 
 #find the daily LST zarr under a given prefix
 def _discover_daily_zarr(prefix: str) -> str:
@@ -84,6 +84,9 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
     # Extract metadata
     latitude = data_dict.get("latitude", 0.0)
     longitude = data_dict.get("longitude", 0.0)
+
+    # get elevation data
+    elevation = get_elevation(latitude, longitude)
     
     # Build header
     wth_lines = []
@@ -155,3 +158,30 @@ def save_wth_data(wth_content: str,
         f.write(wth_content)
     
     return str(filepath)
+
+def get_elevation(lat: float, lon: float) -> float:
+    """
+    Get elevation for a specific latitude and longitude.
+
+    Parameters:
+        lat (float): Latitude of the location.
+        lon (float): Longitude of the location.
+        welev_data (xarray.Dataset): Loaded WELEV dataset.
+
+    Returns:
+        float: Elevation in meters.
+    """
+
+    welev_file=ELEVATION_FILE
+
+    # Load the WELEV data
+    ds = xr.open_dataset(welev_file)
+    welev_data = ds['WELEV']
+
+    # if direct data is to be used
+    # elevation = welev_data.sel(y=lat, x=lon, method="nearest").values.item()
+    
+    # Interpolate to exact coordinates
+    elevation = welev_data.interp(y=lat, x=lon, method='linear')
+    
+    return elevation.values.item()
