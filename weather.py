@@ -21,14 +21,31 @@ async def download_weather_data(
         return
     #else execute the code to download the data
     if (date.today() - end_date).days < 7 or source == "API":
-        icasa_format_data = await get_Daily_API_WTH(latitude, longitude, start_date, end_date, include_srad, include_met)
-        
+        try:
+            icasa_format_data = await get_Daily_API_WTH(latitude, longitude, start_date, end_date, include_srad, include_met)
+        except Exception as e:
+            print(f"Error occurred while fetching data from API: {e}")
+            print("Warning: Data might not be available in API for dates older than 7 days. Falling back to S3.")
+            try:
+                icasa_format_data = await get_Daily_S3_WTH(latitude, longitude, start_date, end_date, include_srad, include_met)
+            except Exception as e:
+                print(f"Error occurred while fetching data from S3: {e}")
+            return
+
     ## if the date is older than 7 days, use the historical s3 bucket
     elif (date.today() - end_date).days > 7 and source == "S3":
-        icasa_format_data = await get_Daily_S3_WTH(latitude, longitude, start_date, end_date, include_srad, include_met)
+        try:
+            icasa_format_data = await get_Daily_S3_WTH(latitude, longitude, start_date, end_date, include_srad, include_met)
+        except Exception as e:
+            print(f"Error occurred while fetching data from S3: {e}")
+            print("Warning: Data might not be available in S3 for the last 7 days. Falling back to API.")
+            try:
+                icasa_format_data = await get_Daily_API_WTH(latitude, longitude, start_date, end_date, include_srad, include_met)
+            except Exception as e:
+                print(f"Error occurred while fetching data from API: {e}")
+                return
 
-    ## else if the date is within 7 days OR failed to get from s3 OR source is 'API',use the api to get the data
-    icasa_format_data = await get_Daily_API_WTH(latitude, longitude, start_date, end_date, include_srad, include_met)
+    # if the stated method fails, fallback to the other method
     
     # Create data directory if it doesn't exist
     Path(DATA_DIR).mkdir(exist_ok=True)
@@ -38,8 +55,10 @@ async def download_weather_data(
     filepath = Path(DATA_DIR) / filename
 
     # Save data
-    save_wth_data(icasa_format_data, filepath)
-
+    try:
+        save_wth_data(icasa_format_data, filepath)
+    except Exception as e:
+        print(f"Error occurred while saving data: {e}")
 
 def validate_existing_data(
         latitude: float,
