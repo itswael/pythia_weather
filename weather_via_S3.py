@@ -2,6 +2,7 @@ from datetime import date
 from typing import Any, Dict, Optional
 import asyncio
 import pandas as pd
+import xarray as xr
 from config import MERRA2DAILY_ZARR_HINT, SYN1DAILY_ZARR_HINT, MET_VARS, SOLAR_VARS, RenameMetVars, RenameSolarVars
 from weather_util import _discover_daily_zarr, _open_power_zarr, _slice_point, _transform_values, convert_to_wth_format
 
@@ -120,3 +121,29 @@ async def get_Daily_S3_WTH(
     icasa_format_data = convert_to_wth_format(data_dict, "NASA", 40.0)
 
     return icasa_format_data
+
+def get_elevation(lat: float, lon: float) -> float:
+    """
+    Get elevation for a specific latitude and longitude.
+
+    Parameters:
+        lat (float): Latitude of the location.
+        lon (float): Longitude of the location.
+        welev_data (xarray.Dataset): Loaded WELEV dataset.
+
+    Returns:
+        float: Elevation in meters.
+    """
+
+    welev_file='welev_merra2_grid.nc'
+
+    # Load the WELEV data
+    ds = xr.open_dataset(welev_file)
+    welev_data = ds['WELEV']
+
+    #elevation = welev_data.sel(y=lat, x=lon, method="nearest").values.item()
+    
+    # Interpolate to exact coordinates
+    elevation = welev_data.interp(y=lat, x=lon, method='linear')
+    
+    return elevation.values.item()
