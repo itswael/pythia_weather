@@ -37,3 +37,6 @@ variable_map = {
 
 # Output directory
 DATA_DIR = Path("data")
+
+# Elevation file
+ELEVATION_FILE = Path("data/WELEV_0.1deg.nc")
