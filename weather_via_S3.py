@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional
 import asyncio
 import pandas as pd
 from config import MERRA2DAILY_ZARR_HINT, SYN1DAILY_ZARR_HINT, MET_VARS, SOLAR_VARS, RenameMetVars, RenameSolarVars
-from weather_util import _discover_daily_zarr, _open_power_zarr, _slice_point, _transform_values
+from weather_util import _discover_daily_zarr, _open_power_zarr, _slice_point, _transform_values, convert_to_wth_format
 
 
 async def get_power_s3_daily(latitude: float,
@@ -94,3 +94,29 @@ async def get_power_s3_daily(latitude: float,
             df = pd.DataFrame()
             out["error"] = str(e)
     return (df, out)
+
+async def get_Daily_S3_WTH(
+        latitude: float,
+        longitude: float,
+        start_date: date,
+        end_date: date,
+        include_srad: bool,
+        include_met: bool):
+
+    # Fetch data from NASA POWER S3/Zarr
+    df, out = await get_power_s3_daily(
+            latitude,
+            longitude,
+            start_date,
+            end_date,
+            include_srad,
+            include_met
+        )
+
+    # fix the data values
+    data_dict = _transform_values(df, out)
+
+    # Convert to ICASA format
+    icasa_format_data = convert_to_wth_format(data_dict, "NASA", 40.0)
+
+    return icasa_format_data
