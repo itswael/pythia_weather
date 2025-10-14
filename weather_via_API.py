@@ -38,8 +38,7 @@ async def get_Daily_API_WTH(latitude: float,
     # Filter out meteorological parameters if not requested
     if not include_met:
         parameters = ",".join([p for p in parameters.split(",") if p not in ["T2M_MAX", "T2M_MIN", "PRECTOTCORR"]])
-    
-    print(f"Requesting parameters: {parameters}")
+
     params = {
         "start": start_date.strftime("%Y%m%d"),
         "end": end_date.strftime("%Y%m%d"),
