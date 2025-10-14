@@ -27,11 +27,19 @@ async def get_Daily_API_WTH(latitude: float,
     """
     if not include_srad and not include_met:
         raise ValueError("At least one of include_srad or include_met must be True.")
+    
+    # Start with all parameters
+    parameters = NASA_POWER_API_PARAMS
+    
+    # Filter out SRAD parameter if not requested
     if not include_srad:
-        parameters = ",".join([p for p in NASA_POWER_API_PARAMS.split(",") if p != "ALLSKY_SFC_SW_DWN"])
+        parameters = ",".join([p for p in parameters.split(",") if p != "ALLSKY_SFC_SW_DWN"])
+    
+    # Filter out meteorological parameters if not requested
     if not include_met:
-        parameters = ",".join([p for p in NASA_POWER_API_PARAMS.split(",") if p != "T2M_MAX" and p != "T2M_MIN" and p != "PRECTOTCORR"])
-
+        parameters = ",".join([p for p in parameters.split(",") if p not in ["T2M_MAX", "T2M_MIN", "PRECTOTCORR"]])
+    
+    print(f"Requesting parameters: {parameters}")
     params = {
         "start": start_date.strftime("%Y%m%d"),
         "end": end_date.strftime("%Y%m%d"),
