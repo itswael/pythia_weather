@@ -7,6 +7,7 @@ from pathlib import Path
 from datetime import date, datetime
 from typing import Any, Dict, Iterable
 from config import ELEVATION_FILE, NASA_POWER_S3_BASE, variable_map
+from config import ELEVATION, REFHT, WNDHT, TAV, AMP
 
 #find the daily LST zarr under a given prefix
 def _discover_daily_zarr(prefix: str) -> str:
@@ -86,14 +87,14 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
     longitude = data_dict.get("longitude", 0.0)
 
     # get elevation data
-    elevation = get_elevation(latitude, longitude)
+    ELEVATION = get_elevation(latitude, longitude)
     
     # Build header
     wth_lines = []
     wth_lines.append("*WEATHER DATA : NASA POWER via S3/Zarr")
     wth_lines.append("")
-    wth_lines.append("@ INSI      LAT     LONG  ELEV   TAV   AMP REFHT WNDHT")
-    wth_lines.append(f"  {station_name:>4} {latitude:8.3f} {longitude:8.3f} {elevation:5.0f}  -99.0  -99.0  -99.0  -99.0")
+    wth_lines.append("@ INSI   WTHLAT  WTHLONG   WELEV   TAV  AMP  REFHT  WNDHT")
+    wth_lines.append(f"  {station_name:>4} {latitude:8.1f} {longitude:8.1f} {ELEVATION:8.2f}  {TAV:4.1f}  {AMP:4.1f}  {REFHT:5.0f}  {WNDHT:5.0f}")
     wth_lines.append("")
     
     # Determine available variables and create header
