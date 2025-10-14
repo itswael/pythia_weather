@@ -93,8 +93,10 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
     wth_lines = []
     wth_lines.append("*WEATHER DATA : NASA POWER via S3/Zarr")
     wth_lines.append("")
-    wth_lines.append("@ INSI   WTHLAT  WTHLONG   WELEV   TAV  AMP  REFHT  WNDHT")
-    wth_lines.append(f"  {station_name:>4} {latitude:8.1f} {longitude:8.1f} {ELEVATION:8.2f}  {TAV:4.1f}  {AMP:4.1f}  {REFHT:5.0f}  {WNDHT:5.0f}")
+    wth_lines.append("@ INSI   WTHLAT  WTHLONG   WELEV   TAV   AMP  REFHT  WNDHT")
+    # Use consistent field widths that can handle negative values and larger numbers
+    # INSI: 6 chars, WTHLAT: 8 chars, WTHLONG: 8 chars, WELEV: 7 chars, TAV: 5 chars, AMP: 5 chars, REFHT: 6 chars, WNDHT: 6 chars
+    wth_lines.append(f"  {station_name:>4} {latitude:>8.1f} {longitude:>8.1f} {ELEVATION:>7.2f} {TAV:>5.1f} {AMP:>5.1f} {REFHT:>6.0f} {WNDHT:>6.0f}")
     wth_lines.append("")
     
     # Determine available variables and create header
