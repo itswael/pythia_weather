@@ -20,8 +20,10 @@ async def download_weather_data(
         print("Data file already exists. Skipping download.")
         return
     #else execute the code to download the data
-    if (date.today() - end_date).days < 7 or source == "API":
+    if source == "API":
         try:
+            if (date.today() - end_date).days < 7:
+                raise ValueError("Data older than 7 days not available in API.")
             icasa_format_data = await get_Daily_API_WTH(latitude, longitude, start_date, end_date, include_srad, include_met)
         except Exception as e:
             print(f"Error occurred while fetching data from API: {e}")
