@@ -40,3 +40,10 @@ DATA_DIR = Path("data")
 
 # Elevation file
 ELEVATION_FILE = Path("data/WELEV_0.1deg.nc")
+
+#Default Values
+ELEVATION = -99.0  # meters
+REFHT = 2.0  # Reference height for temperature (m)
+WNDHT = 2.0  # Reference height for wind speed (m)
+TAV = -99.0  # Average temperature (°C)
+AMP = -99.0  # Temperature amplitude (°C)
