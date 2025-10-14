@@ -141,24 +141,27 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
 
 def save_wth_data(wth_content: str, 
                   filepath: Path ) -> str:
-    """Save .wth formatted data.
+    """Save .wth formatted data with consistent Unix-style line endings.
+    
+    This ensures the file is readable on any platform (Windows, Linux, macOS)
+    without extra blank lines appearing.
     
     Args:
         wth_content: ICASA .wth format content
-        latitude: Latitude coordinate
-        longitude: Longitude coordinate
-        start_date: Start date for filename
-        end_date: End date for filename
-        data_dir: Directory to save the file
+        filepath: Path where the file should be saved
         
     Returns:
         Path to the saved file
     """
     
+    # Normalize line endings to Unix style (\n) for cross-platform compatibility
+    # This prevents double line spacing issues when transferring between systems
+    normalized_content = wth_content.replace('\r\n', '\n').replace('\r', '\n')
     
-    # Save data
-    with open(filepath, "w", encoding="utf-8") as f:
-        f.write(wth_content)
+    # Save data with newline='' to prevent Python from converting line endings
+    # Use UTF-8 encoding for universal compatibility
+    with open(filepath, "w", encoding="utf-8", newline='') as f:
+        f.write(normalized_content)
     
     return str(filepath)
 
