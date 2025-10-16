@@ -53,7 +53,7 @@ async def download_weather_data(
     Path(DATA_DIR).mkdir(exist_ok=True)
 
     # Generate filename
-    filename = f"NP{latitude}_{longitude}_{start_date.strftime('%Y%m%d')}_{end_date.strftime('%Y%m%d')}.wth"
+    filename = f"NP{latitude}_{longitude}_{start_date.strftime('%Y%m%d')}_{end_date.strftime('%Y%m%d')}.WTH"
     filepath = Path(DATA_DIR) / filename
 
     # Save data
@@ -78,4 +78,4 @@ def validate_existing_data(
     
 
 if __name__ == "__main__":
-    asyncio.run(download_weather_data(42.0, -93.5, date(2020, 1, 1), date(2020, 3, 31)))
+    asyncio.run(download_weather_data(42.0, -93.5, date(1996, 5, 16), date(1997, 3, 25)))
