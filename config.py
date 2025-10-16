@@ -47,3 +47,17 @@ REFHT = 2.0  # Reference height for temperature (m)
 WNDHT = 2.0  # Reference height for wind speed (m)
 TAV = -9.0  # Average temperature (°C)
 AMP = 9.0  # Temperature amplitude (°C)
+
+# Other constants
+META = """*WEATHER DATA : NASA POWER via S3/Zarr
+
+! T2M     Temperature at 2 Meters (C)
+! TMIN     Temperature at 2 Meters Minimum (C)
+! TMAX     Temperature at 2 Meters Maximum (C)
+! TDEW     Dew/Frost Point at 2 Meters (C)
+! RH2M     Relative Humidity at 2 Meters (%)
+! RAIN     Precipitation Corrected (mm/day)
+! WIND     Wind Speed at 2 Meters (m/s)
+! SRAD     All Sky Surface Shortwave Downward Irradiance (MJ/m^2/day)
+
+@ INSI   WTHLAT  WTHLONG   WELEV   TAV   AMP  REFHT  WNDHT"""
