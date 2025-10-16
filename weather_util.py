@@ -6,7 +6,7 @@ import s3fs
 from pathlib import Path
 from datetime import date, datetime
 from typing import Any, Dict, Iterable
-from config import ELEVATION_FILE, NASA_POWER_S3_BASE, variable_map
+from config import ELEVATION_FILE, META, NASA_POWER_S3_BASE, variable_map
 from config import ELEVATION, REFHT, WNDHT, TAV, AMP
 
 #find the daily LST zarr under a given prefix
@@ -91,9 +91,7 @@ def convert_to_wth_format(data_dict: Dict[str, Any],
     
     # Build header
     wth_lines = []
-    wth_lines.append("*WEATHER DATA : NASA POWER via S3/Zarr")
-    wth_lines.append("")
-    wth_lines.append("@ INSI   WTHLAT  WTHLONG   WELEV   TAV   AMP  REFHT  WNDHT")
+    wth_lines.append(META)
     # Use consistent field widths that can handle negative values and larger numbers
     # INSI: 6 chars, WTHLAT: 8 chars, WTHLONG: 8 chars, WELEV: 7 chars, TAV: 5 chars, AMP: 5 chars, REFHT: 6 chars, WNDHT: 6 chars
     wth_lines.append(f"  {station_name:>4} {latitude:>8.1f} {longitude:>8.1f} {ELEVATION:>7.2f} {TAV:>5.1f} {AMP:>5.1f} {REFHT:>6.0f} {WNDHT:>6.0f}")
