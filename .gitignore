@@ -1,3 +1,7 @@
 env/
 /etopo180_8571_f367_229e.nc
 exclude/
+chirps_data/
+data/
+__pycache__/
+chirps_analysis_output/
