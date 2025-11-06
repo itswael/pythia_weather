@@ -49,7 +49,7 @@ TAV = -99.0  # Average temperature (°C)
 AMP = -99.0  # Temperature amplitude (°C)
 
 # Other constants
-META = """*WEATHER DATA : NASA POWER via S3/Zarr
+META = """$WEATHER DATA : NASA POWER via S3/Zarr
 
 ! T2M     Temperature at 2 Meters (C)
 ! TMIN     Temperature at 2 Meters Minimum (C)
