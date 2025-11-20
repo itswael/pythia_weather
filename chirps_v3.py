@@ -111,3 +111,16 @@ def load_chirps_data(file_paths, lat, lon):
         da.close()
     
     return data
+
+def create_dataframe(data):
+    """Convert data to DataFrame with DATE (yyyyddd) and CRAIN columns."""
+    df = pd.DataFrame(data)
+    
+    df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
+    df['day_of_year'] = df['date'].dt.dayofyear
+    df['DATE'] = df['year'] * 1000 + df['day_of_year']
+    df['RAIN'] = df['precip']
+    
+    result = df[['DATE', 'RAIN']].copy()
+    
+    return result
