@@ -48,3 +48,33 @@ def check_existing_files(start_date, end_date, data_dir):
         'existing_count': len(existing_files),
         'missing_count': len(missing_dates)
     }
+
+def download_chirps_v3(missing_dates, data_dir, base_url):
+    """Download missing CHIRPS V3 TIF files."""
+    downloaded = []
+    failed = []
+    
+    for date in missing_dates:
+        year = date.year
+        month = date.month
+        day = date.day
+        
+        filename = f'chirps-v3.0.rnl.{year}.{month:02d}.{day:02d}.tif'
+        filepath = Path(data_dir) / filename
+        url = f'{base_url}/{year}/{filename}'
+        
+        try:
+            response = requests.get(url, stream=True, timeout=300)
+            response.raise_for_status()
+            
+            with open(filepath, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+            
+            downloaded.append(filepath)
+            
+        except Exception as e:
+            failed.append((filename, str(e)))
+    
+    return {'downloaded': downloaded, 'failed': failed}
