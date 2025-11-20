@@ -6,3 +6,4 @@ data/
 __pycache__/
 chirps_analysis_output/
 nasa_chirps_data/
+chirps_v3_data/
