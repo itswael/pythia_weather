@@ -78,3 +78,36 @@ def download_chirps_v3(missing_dates, data_dir, base_url):
             failed.append((filename, str(e)))
     
     return {'downloaded': downloaded, 'failed': failed}
+
+def load_chirps_data(file_paths, lat, lon):
+    """Load CHIRPS V3 data and extract values for specific coordinates."""
+    data = []
+    
+    for filepath in sorted(file_paths):
+        filename = filepath.name
+        parts = filename.split('.')
+        year = int(parts[3])
+        month = int(parts[4])
+        day = int(parts[5])
+        
+        da = rioxarray.open_rasterio(filepath, masked=True)
+        da = da.squeeze().drop_vars('band', errors='ignore')
+        
+        point_value = da.sel(x=lon, y=lat, method='nearest').values
+        
+        if hasattr(point_value, 'item'):
+            point_value = point_value.item()
+        
+        if point_value < 0 or pd.isna(point_value):
+            point_value = 0.0
+        
+        data.append({
+            'year': year,
+            'month': month,
+            'day': day,
+            'precip': float(point_value)
+        })
+        
+        da.close()
+    
+    return data
