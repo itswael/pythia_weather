@@ -7,10 +7,6 @@ from calendar import monthrange
 from pathlib import Path
 
 # Configuration Constants
-LATITUDE = 42.0
-LONGITUDE = -93.5
-START_DATE = '2020-01-01'
-END_DATE = '2020-01-31'
 DATA_DIR = './chirps_v3_data'
 CHIRPS_V3_BASE_URL = 'https://data.chc.ucsb.edu/products/CHIRPS/v3.0/daily/final/rnl'
 
@@ -124,3 +120,20 @@ def create_dataframe(data):
     result = df[['DATE', 'RAIN']].copy()
     
     return result
+
+def get_chirps_v3_data(latitude, longitude, start_date, end_date):
+    """Main function to get CHIRPS V3 data for specified coordinates and date range."""
+    file_status = check_existing_files(start_date, end_date, DATA_DIR)
+    
+    if file_status['missing_count'] > 0:
+        download_result = download_chirps_v3(file_status['missing'], DATA_DIR, CHIRPS_V3_BASE_URL)
+    else:
+        print(f"All {file_status['total']} files already exist. Skipping download.")
+    
+    all_files = check_existing_files(start_date, end_date, DATA_DIR)['existing']
+    raw_data = load_chirps_data(all_files, latitude, longitude)
+    
+    df = create_dataframe(raw_data)
+    print(df.head())
+    
+    return df
