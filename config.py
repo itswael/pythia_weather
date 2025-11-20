@@ -28,11 +28,12 @@ variable_map = {
         'T2M': 'T2M',    # Average temperature (°C)
         'TMAX': 'TMAX',  # Maximum temperature (°C)
         'TMIN': 'TMIN',  # Minimum temperature (°C)
-        'RAIN': 'RAIN',  # Precipitation (mm)
+        'RAIN': 'RAIN2',  # Precipitation (mm)
         'SRAD': 'SRAD',  # Solar radiation (MJ/m²/day)
         'T2MDEW': 'TDEW', # Dew point temperature (°C)
         'WS2M': 'WIND',   # Wind speed (m/s)
-        'RH2M': 'RH2M'    # Relative humidity (%)
+        'RH2M': 'RH2M',  # Relative humidity (%)
+        'RAIN1': 'RAIN',  # Precipitation (mm)
     }
 
 # Output directory
