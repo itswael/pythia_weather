@@ -12,8 +12,10 @@ CHIRPS_V3_BASE_URL = 'https://data.chc.ucsb.edu/products/CHIRPS/v3.0/daily/final
 
 def check_existing_files(start_date, end_date, data_dir):
     """Check which CHIRPS V3 files already exist locally."""
-    start = datetime.strptime(start_date, '%Y-%m-%d')
-    end = datetime.strptime(end_date, '%Y-%m-%d')
+    # start = datetime.strptime(start_date, '%Y-%m-%d')
+    # end = datetime.strptime(end_date, '%Y-%m-%d')
+    start = pd.to_datetime(start_date)
+    end = pd.to_datetime(end_date)
     
     Path(data_dir).mkdir(parents=True, exist_ok=True)
     
@@ -112,12 +114,12 @@ def create_dataframe(data):
     """Convert data to DataFrame with DATE (yyyyddd) and CRAIN columns."""
     df = pd.DataFrame(data)
     
-    df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
-    df['day_of_year'] = df['date'].dt.dayofyear
-    df['DATE'] = df['year'] * 1000 + df['day_of_year']
-    df['RAIN'] = df['precip']
+    df['time'] = pd.to_datetime(df[['year', 'month', 'day']])
+    # df['day_of_year'] = df['date'].dt.dayofyear
+    # df['DATE'] = df['year'] * 1000 + df['day_of_year']
+    df['RAIN1'] = df['precip']
     
-    result = df[['DATE', 'RAIN']].copy()
+    result = df[['time', 'RAIN1']].copy()
     
     return result
 
@@ -134,6 +136,14 @@ def get_chirps_v3_data(latitude, longitude, start_date, end_date):
     raw_data = load_chirps_data(all_files, latitude, longitude)
     
     df = create_dataframe(raw_data)
-    print(df.head())
+    # print(df.head())
     
     return df
+
+if __name__ == "__main__":
+    latitude = 42.0
+    longitude = -93.5
+    start_date = '2020-01-01'
+    end_date = '2020-01-31'
+    
+    get_chirps_v3_data(latitude, longitude, start_date, end_date)
