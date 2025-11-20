@@ -96,6 +96,7 @@ async def get_power_s3_daily(latitude: float,
     return (df, out)
 
 async def get_Daily_S3_WTH(
+        chirpsdata: pd.DataFrame,
         latitude: float,
         longitude: float,
         start_date: date,
@@ -112,7 +113,7 @@ async def get_Daily_S3_WTH(
             include_srad,
             include_met
         )
-
+    df = df.merge(chirpsdata, on="time", how="left")
     # fix the data values
     data_dict = _transform_values(df, out)
 
