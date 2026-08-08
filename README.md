@@ -228,7 +228,7 @@ When contributing to this project:
 
 ## License
 
-This project is designed for educational and research purposes. Users should comply with NASA POWER data usage policies and terms of service.
+MIT — see [LICENSE](LICENSE). This project is designed for educational and research purposes; users should also comply with NASA POWER data usage policies and terms of service.
 
 ## Support
 
